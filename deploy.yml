@@ -19,9 +19,7 @@ spec:
         image:  shivareddy24/healthcare:1.0
         ports:
         - containerPort: 8084
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "prod"
+      
 ---
 apiVersion: v1
 kind: Service
