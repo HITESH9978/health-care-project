@@ -57,7 +57,7 @@ pipeline {
     stage('Deploying to Kubernetes with Ansible') {
       steps {
         echo 'Deploying application to Kubernetes cluster using Ansible'
-        sh 'ansible-playbook -i inventory deploy-k8s.yml'
+        sh 'ansible-playbook -i inventory deploy.yml'
       }
     }
   }
