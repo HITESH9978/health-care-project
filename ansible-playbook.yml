@@ -1,20 +1,23 @@
-- name : Configure Docker on EC2 Instances
-  hosts : hostserver
+- name: Configure Docker on EC2 Instances
+  hosts: hostserver
   become: true
-  connection : ssh
-  tasks : 
-  - name: updating apt
-    command : sudo apt-get update
+  connection: ssh
 
-  - name : Install Docker
-    command : sudo apt-get install -y docker.io
-    become : yes
-    become_user : root
+  tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
 
-  - name : Start Docker Service
-    command : sudo systemctl start docker
-    become : yes
-    become_user : root
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
 
-  - name: Deploy Docker Container
-    command: docker run -itd -p 8084:8082 shivareddy24/healthcare:1.0
+    - name: Start and Enable Docker Service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Deploy Docker Container
+      command: docker run -itd -p 8084:8082 --name healthcare shivareddy24/healthcare:1.0
