@@ -19,32 +19,23 @@ pipeline {
       }
     }
 
-stage('Generate Test Report') {
-  steps {
-    echo 'Generating test report using TestNG'
-    publishHTML([
-      allowMissing: false, 
-      alwaysLinkToLastBuild: false, 
-      keepAll: false, 
-      reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', 
-      reportFiles: 'index.html', 
-      reportName: 'HTML Report', 
-      reportTitles: ''
-    ])
-  }
-}
-
-//    stage('Generate Test Report') {
-   //   steps {
-      //  echo 'Generating test report using TestNG'
-      //  publishHTML([
-      //    allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, 
-      //    reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', 
-        //  reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', 
-        //  useWrapperFileDirectly: true
-       // ])
-    //  }
-   // }
+    stage('Generate Test Report') {
+      steps {
+        echo 'Checking TestNG report generation'
+        sh 'ls -l /var/lib/jenkins/workspace/Healthcare/target/surefire-reports'  // Check if report exists
+        
+        echo 'Generating test report using TestNG'
+        publishHTML([
+          allowMissing: false, 
+          alwaysLinkToLastBuild: false, 
+          keepAll: false, 
+          reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', 
+          reportFiles: 'index.html', 
+          reportName: 'HTML Report', 
+          reportTitles: ''
+        ])
+      }
+    }
       
     stage('Create Docker Image') {
       steps {
@@ -57,7 +48,7 @@ stage('Generate Test Report') {
       steps {
         echo 'Logging into DockerHub'
         withCredentials([usernamePassword(credentialsId: 'docker-pwd', passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
-          sh 'docker login -u ${dockeruser} -p ${dockerpass}'
+          sh "docker login -u ${dockeruser} -p ${dockerpass}"
         }
       }
     }
@@ -72,7 +63,8 @@ stage('Generate Test Report') {
     stage('Deploying to Kubernetes with Ansible') {
       steps {
         echo 'Deploying application to Kubernetes cluster using Ansible'
-        sh 'ansible-playbook -i /etc/ansible/hosts deploy.yml'
+        sh 'ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml'
+        sh 'kubectl apply -f deploy.yml'  // Apply the Kubernetes manifest after Ansible deployment
       }
     }
   }
