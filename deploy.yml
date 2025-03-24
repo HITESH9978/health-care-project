@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: capstone-app-container
-        image:  shivareddy24/healthcare:1.0
+        image: shivareddy24/healthcare:1.0
         ports:
         - containerPort: 8084
-      
+
 ---
 apiVersion: v1
 kind: Service
@@ -33,4 +33,4 @@ spec:
   - protocol: TCP
     port: 8085
     targetPort: 8082
-    nodePort: 30082  # NodePort value; it will expose to
+    nodePort: 30082  # NodePort value; it will expose to external traffic
