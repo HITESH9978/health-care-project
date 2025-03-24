@@ -18,19 +18,34 @@ pipeline {
         sh 'mvn package'
       }
     }
-    
-    stage('Generate Test Report') {
-      steps {
-        echo 'Generating test report using TestNG'
-        publishHTML([
-          allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, 
-          reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', 
-          reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', 
-          useWrapperFileDirectly: true
-        ])
-      }
-    }
-    
+
+stage('Generate Test Report') {
+  steps {
+    echo 'Generating test report using TestNG'
+    publishHTML([
+      allowMissing: false, 
+      alwaysLinkToLastBuild: false, 
+      keepAll: false, 
+      reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', 
+      reportFiles: 'index.html', 
+      reportName: 'HTML Report', 
+      reportTitles: ''
+    ])
+  }
+}
+
+//    stage('Generate Test Report') {
+   //   steps {
+      //  echo 'Generating test report using TestNG'
+      //  publishHTML([
+      //    allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, 
+      //    reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', 
+        //  reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', 
+        //  useWrapperFileDirectly: true
+       // ])
+    //  }
+   // }
+      
     stage('Create Docker Image') {
       steps {
         echo 'Creating a Docker image'
