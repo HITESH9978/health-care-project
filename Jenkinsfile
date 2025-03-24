@@ -57,7 +57,7 @@ pipeline {
     stage('Deploying to Kubernetes with Ansible') {
       steps {
         echo 'Deploying application to Kubernetes cluster using Ansible'
-        sh 'ansible-playbook -i inventory deploy.yml'
+        sh 'ansible-playbook -i /etc/ansible/hosts deploy.yml'
       }
     }
   }
