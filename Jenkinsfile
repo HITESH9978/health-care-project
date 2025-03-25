@@ -37,7 +37,14 @@ pipeline {
       }
     }
       
-  
+  stage('Create Docker Image') {
+  steps {
+    echo 'Creating a Docker image'
+    // Build the Docker image and tag it as '1.0' and 'latest'
+    sh 'docker build -t shivareddy24/healthcare:1.0 .'
+    sh 'docker tag shivareddy24/healthcare:1.0 shivareddy24/healthcare:latest'
+  }
+}
     
   stage('Login to DockerHub') {
      steps {
@@ -51,7 +58,7 @@ pipeline {
    stage('Docker Push Image') {
       steps {
         echo 'Pushing the Docker image to DockerHub'
-       sh 'docker push shivareddy24/healthcare:1.0'
+       sh 'docker push shivareddy24/healthcare:latest'
       }
    }
   stage('Deploying to Kubernetes with Ansible') {
