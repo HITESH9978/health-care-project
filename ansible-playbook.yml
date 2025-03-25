@@ -20,4 +20,4 @@
         enabled: yes
 
     - name: Deploy Docker Container
-      command: docker run -itd -p 8084:8082 --name healthcare shivareddy24/healthcare:latest
+      command: docker run -itd -p 8084:8082 --name healthcare shivareddy24/healthcare:1.0
