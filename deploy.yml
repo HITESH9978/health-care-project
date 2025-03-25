@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: capstone-app-container
-          image: shivareddy24/healthcare1:1.0
+          image: shivareddy24/healthcare:1.0
           ports:
             - containerPort: 8082  # Fixed to match the targetPort in the service
 
