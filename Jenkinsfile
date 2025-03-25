@@ -43,22 +43,40 @@ pipeline {
         sh 'docker build -t shivareddy24/healthcare:1.0 .'
       }
     }
-    
     stage('Login to DockerHub') {
-      steps {
+    steps {
         echo 'Logging into DockerHub'
         withCredentials([usernamePassword(credentialsId: 'docker-pwd', passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
-          sh "docker login -u ${dockeruser} -p ${dockerpass}"
+            sh """
+                echo \$dockerpass | docker login -u \$dockeruser --password-stdin
+            """
         }
-      }
     }
-    
-    stage('Docker Push Image') {
-      steps {
+}
+
+stage('Docker Push Image') {
+    steps {
         echo 'Pushing the Docker image to DockerHub'
         sh 'docker push shivareddy24/healthcare:1.0'
-      }
     }
+}
+
+    
+   // stage('Login to DockerHub') {
+   //   steps {
+    //    echo 'Logging into DockerHub'
+    //    withCredentials([usernamePassword(credentialsId: 'docker-pwd', passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
+    //      sh "docker login -u ${dockeruser} -p ${dockerpass}"
+    //    }
+    //  }
+   // }
+    
+   // stage('Docker Push Image') {
+     // steps {
+     //   echo 'Pushing the Docker image to DockerHub'
+     //   sh 'docker push shivareddy24/healthcare:1.0'
+    //  }
+   // }
   stage('Deploying to Kubernetes with Ansible') {
   steps {
     echo 'Deploying application to Kubernetes cluster using Ansible'
