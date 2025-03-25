@@ -51,7 +51,7 @@ pipeline {
    stage('Docker Push Image') {
       steps {
         echo 'Pushing the Docker image to DockerHub'
-       sh 'docker push shivareddy24/healthcare:latest'
+       sh 'docker push shivareddy24/healthcare:1.0'
       }
    }
   stage('Deploying to Kubernetes with Ansible') {
