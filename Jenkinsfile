@@ -59,13 +59,20 @@ pipeline {
         sh 'docker push shivareddy24/healthcare:1.0'
       }
     }
-    
     stage('Deploying to Kubernetes with Ansible') {
-      steps {
-        echo 'Deploying application to Kubernetes cluster using Ansible'
-        sh 'ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml'
-        sh 'kubectl apply -f deploy.yml'  // Apply the Kubernetes manifest after Ansible deployment
-      }
-    }
+  steps {
+    echo 'Deploying application to Kubernetes cluster using Ansible'
+    sh 'ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml -e ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
+    sh 'kubectl apply -f deploy.yml'  // Apply the Kubernetes manifest after Ansible deployment
+  }
+}
+    
+  //  stage('Deploying to Kubernetes with Ansible') {
+   //   steps {
+   //     echo 'Deploying application to Kubernetes cluster using Ansible'
+   //     sh 'ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml'
+   //     sh 'kubectl apply -f deploy.yml'  // Apply the Kubernetes manifest after Ansible deployment
+   //   }
+   // }
   }
 }
