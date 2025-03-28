@@ -1,5 +1,5 @@
 - name: Configure Docker on EC2 Instances
-  hosts: hostserver
+  hosts: k8snode
   become: true
   connection: ssh
 
