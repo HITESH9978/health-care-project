@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
         - name: capstone-app-container
-          image: shivareddy24/healthcare  # Fixed image tag
+          image: shivareddy24/healthcare:latest  # Add the image version here
           ports:
-            - containerPort: 8082  # Should match the targetPort in the service
+            - containerPort: 8082
 
 ---
 apiVersion: v1
@@ -32,5 +32,5 @@ spec:
   ports:
     - protocol: TCP
       port: 8085
-      targetPort: 8082  # Matches the containerPort in Deployment
-      nodePort: 30082  # Exposed NodePort
+      targetPort: 8082
+      nodePort: 30082
