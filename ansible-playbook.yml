@@ -1,7 +1,10 @@
+---
 - name: Configure Docker on EC2 Instances
   hosts: k8snode
   become: true
   connection: ssh
+  vars:
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"  # Ensure SSH works without strict checking
 
   tasks:
     - name: Update apt packages
@@ -21,3 +24,11 @@
 
     - name: Deploy Docker Container
       command: docker run -itd -p 8084:8082 --name healthcare shivareddy24/healthcare
+
+    - name: Ensure Kubernetes kubectl is installed
+      apt:
+        name: kubectl
+        state: present
+
+    - name: Apply Kubernetes Deployment and Service files
+      command: kubectl apply -f /path/to/deploy.yml  # You can provide the absolute path to your deploy.yml file
