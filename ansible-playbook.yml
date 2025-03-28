@@ -31,4 +31,4 @@
         state: present
 
     - name: Apply Kubernetes Deployment and Service files
-      command: kubectl apply -f /path/to/deploy.yml  # You can provide the absolute path to your deploy.yml file
+      command: kubectl apply -f /etc/ansible/hosts/deploy.yml  # You can provide the absolute path to your deploy.yml file
