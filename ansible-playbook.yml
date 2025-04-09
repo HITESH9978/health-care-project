@@ -1,70 +1,24 @@
----
 - name: Configure Docker on EC2 Instances
   hosts: k8snode
-  become: true
-  connection: ssh
+  become: true  # Use sudo to run commands as root
   vars:
-    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"  # Disable strict host key checking
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
 
   tasks:
-    - name: Update apt packages as root
+    - name: Update apt packages
       apt:
         update_cache: yes
-      vars:
-        ansible_ssh_user: root  # Specify user as root for this task
-
-    - name: Update apt packages as ubuntu
-      apt:
-        update_cache: yes
-      vars:
-        ansible_ssh_user: ubuntu  # Specify user as ubuntu for this task
 
     - name: Install Docker
       apt:
         name: docker.io
         state: present
-      vars:
-        ansible_ssh_user: root  # Specify user as root for this task
 
     - name: Start and Enable Docker Service
       service:
         name: docker
         state: started
         enabled: yes
-      vars:
-        ansible_ssh_user: root  # Specify user as root for this task
 
     - name: Deploy Docker Container
       command: docker run -itd -p 8086:8082 --name healthcare shivareddy24/healthcare
-      vars:
-        ansible_ssh_user: root  # Specify user as root for this task
-
-
-
-# - name: Configure Docker on EC2 Instances
-#   hosts: k8snode
-#   become: true
-#   connection: ssh
-#   vars:
-#     ansible_ssh_common_args: "-o StrictHostKeyChecking=no"  # Fix this in the vars section
-    
-#   tasks:
-#     - name: Update apt packages
-#       apt:
-#         update_cache: yes
-#         vars:
-#         ansible_ssh_user: root
-
-#     - name: Install Docker
-#       apt:
-#         name: docker.io
-#         state: present
-
-#     - name: Start and Enable Docker Service
-#       service:
-#         name: docker
-#         state: started
-#         enabled: yes
-
-#     - name: Deploy Docker Container
-#       command: docker run -itd -p 8086:8082 --name healthcare shivareddy24/healthcare
