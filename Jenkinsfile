@@ -5,10 +5,6 @@ pipeline {
     maven 'MAVEN'
   }
 
-  environment {
-    KUBECONFIG = "${WORKSPACE}/kubeconfig"  // We'll use a kubeconfig file
-  }
-
   stages {
     stage('Git Checkout') {
       steps {
@@ -53,7 +49,7 @@ pipeline {
       steps {
         echo 'Logging into DockerHub'
         withCredentials([usernamePassword(credentialsId: 'dockerpwd', passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
-          sh 'echo $dockerpass | docker login -u $dockeruser --password-stdin'
+          sh "docker login -u ${dockeruser} -p ${dockerpass}"
         }
       }
     }
@@ -65,27 +61,28 @@ pipeline {
       }
     }
 
-    stage('Deploying with Ansible') {
+    stage('Deploying to Kubernetes with Ansible') {
       steps {
         echo 'Deploying application to Kubernetes cluster using Ansible'
 
-        withCredentials([
-          sshUserPrivateKey(credentialsId: 'devops-key', keyFileVariable: 'SSH_KEY'),
-          file(credentialsId: 'kubeconfig-cred', variable: 'KUBECONFIG_FILE') // kubeconfig as a Jenkins file credential
-        ]) {
-          sh '''
-            echo "Using Ansible to deploy..."
-            ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
-              --private-key $SSH_KEY \
-              -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+        // Use SSH private key stored in Jenkins Credentials
+        withCredentials([sshUserPrivateKey(credentialsId: 'devops-key', keyFileVariable: 'SSH_KEY')]) {
+  sh '''
+    ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
+    -e ansible_ssh_private_key_file=$SSH_KEY \
+    -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+  '''
+}
+      //  withCredentials([sshUserPrivateKey(credentialsId: 'devops-key', keyFileVariable: 'SSH_KEY')]) {
+        //  sh """
+         //   ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
+        //    -e ansible_ssh_private_key_file=$SSH_KEY \
+        //    -e ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+        //  """
+       // }
 
-            echo "Copying kubeconfig for kubectl auth"
-            cp $KUBECONFIG_FILE $KUBECONFIG
-
-            echo "Deploying to Kubernetes cluster"
-            kubectl apply -f deploy.yml
-          '''
-        }
+        // Deploy to Kubernetes
+        sh 'kubectl apply -f deploy.yml'
       }
     }
   }
