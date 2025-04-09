@@ -67,12 +67,19 @@ pipeline {
 
         // Use SSH private key stored in Jenkins Credentials
         withCredentials([sshUserPrivateKey(credentialsId: 'devops-key', keyFileVariable: 'SSH_KEY')]) {
-          sh """
-            ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
-            -e ansible_ssh_private_key_file=$SSH_KEY \
-            -e ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-          """
-        }
+  sh '''
+    ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
+    -e ansible_ssh_private_key_file=$SSH_KEY \
+    -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+  '''
+}
+      //  withCredentials([sshUserPrivateKey(credentialsId: 'devops-key', keyFileVariable: 'SSH_KEY')]) {
+        //  sh """
+         //   ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
+        //    -e ansible_ssh_private_key_file=$SSH_KEY \
+        //    -e ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+        //  """
+       // }
 
         // Deploy to Kubernetes
         sh 'kubectl apply -f deploy.yml'
