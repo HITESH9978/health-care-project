@@ -16,7 +16,6 @@
         state: absent
         purge: yes
         autoremove: yes
-        force: yes
 
     - name: Install prerequisite packages
       apt:
@@ -29,15 +28,23 @@
         state: present
         update_cache: yes
 
-    - name: Add Docker GPG apt Key
-      apt_key:
+    - name: Create directory for Docker keyring
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Add Docker GPG apt Key (to keyring)
+      get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+        dest: /etc/apt/keyrings/docker.gpg
+        mode: '0644'
 
     - name: Add Docker repository
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
         state: present
+        filename: docker
 
     - name: Update apt again after adding Docker repo
       apt:
@@ -51,11 +58,23 @@
           - containerd.io
         state: latest
 
-    - name: Start and Enable Docker Service
-      service:
+    - name: Enable and start containerd
+      systemd:
+        name: containerd
+        state: started
+        enabled: yes
+
+    - name: Start and enable Docker service
+      systemd:
         name: docker
         state: started
         enabled: yes
+
+    - name: Add current user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
 
     - name: Deploy Docker Container
       command: docker run -itd -p 8086:8082 --name healthcare shivareddy24/healthcare
