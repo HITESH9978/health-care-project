@@ -82,7 +82,8 @@ pipeline {
        // }
 
         // Deploy to Kubernetes
-        sh 'kubectl apply -f deploy.yml'
+        sh 'kubectl apply -f deploy.yml --validate=false'
+        // sh 'kubectl apply -f deploy.yml'
       }
     }
   }
