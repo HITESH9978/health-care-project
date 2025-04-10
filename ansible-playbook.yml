@@ -32,20 +32,20 @@
         state: directory
         mode: '0755'
 
-    - name: Add Docker GPG key to keyring
-      get_url:
+    - name: Add Docker GPG key
+      ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.gpg
         mode: '0644'
 
-    - name: Add Docker APT repository
-      apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename | lower }} stable"
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
         filename: docker
 
-    - name: Update APT cache
-      apt:
+    - name: Clean APT cache
+      ansible.builtin.apt:
         update_cache: yes
 
     - name: Remove any old versions of Docker
@@ -88,18 +88,18 @@
         append: yes
 
     - name: Pull Docker image
-      docker_image:
+      community.docker.docker_image:
         name: shivareddy24/healthcare
         source: pull
 
     - name: Remove existing container if already running
-      docker_container:
+      community.docker.docker_container:
         name: healthcare
         state: absent
         force_kill: true
 
     - name: Run Healthcare Docker container
-      docker_container:
+      community.docker.docker_container:
         name: healthcare
         image: shivareddy24/healthcare
         state: started
