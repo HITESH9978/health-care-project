@@ -75,7 +75,7 @@ pipeline {
 
         // Apply Kubernetes deployment using the kubeconfig file from Jenkins credentials
         withCredentials([file(credentialsId: 'kubeconfig-id', variable: 'KUBECONFIG')]) {
-          sh 'kubectl apply -f deploy.yml'
+          sh 'kubectl apply -f deploy.yml --validate=false'
         }
       }
     }
