@@ -48,7 +48,7 @@ pipeline {
       steps {
         echo 'Deploying application to Kubernetes cluster using Ansible'
 
-        withCredentials([sshUserPrivateKey(credentialsId: 'devops-key', keyFileVariable: 'SSH_KEY')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'sshkey', keyFileVariable: 'SSH_KEY')]) {
           sh '''
             ansible-playbook -i /etc/ansible/hosts ansible-playbook.yml \
             -e ansible_ssh_private_key_file=$SSH_KEY \
