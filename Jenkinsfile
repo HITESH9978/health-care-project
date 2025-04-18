@@ -9,7 +9,7 @@ pipeline {
     stage('Git Checkout') {
       steps {
         echo 'Cloning the repository from GitHub'
-        git branch: 'master', url: 'https://github.com/ShivashankarareddyBA/health-care-project.git'
+        git branch: 'master', url: 'https://github.com/HITESH9978/health-care-project.git'
       }
     }
 
@@ -41,7 +41,7 @@ pipeline {
     stage('Create Docker Image') {
       steps {
         echo 'Creating a Docker image'
-        sh 'docker build -t shivareddy24/healthcare:latest .'
+        sh 'docker build -t shriteshb9978/healthcare:latest .'
       }
     }
 
@@ -57,7 +57,7 @@ pipeline {
     stage('Docker Push Image') {
       steps {
         echo 'Pushing the Docker image to DockerHub'
-        sh 'docker push shivareddy24/healthcare:latest'
+        sh 'docker push shriteshb9978/healthcare:latest'
       }
     }
 
