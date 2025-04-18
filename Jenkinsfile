@@ -20,22 +20,10 @@ pipeline {
       }
     }
 
-    stage('Generate Test Report') {
+    stage('Publish Reports using HTML') {
       steps {
-        echo 'Checking TestNG report generation'
-        sh 'ls -l target/surefire-reports'
-
-        echo 'Generating test report using TestNG'
-        publishHTML([
-          allowMissing: false,
-          alwaysLinkToLastBuild: false,
-          keepAll: false,
-          reportDir: 'target/surefire-reports',
-          reportFiles: 'index.html',
-          reportName: 'HTML Report',
-          reportTitles: ''
-        ])
-      }
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Insure-Project/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            }
     }
 
     stage('Create Docker Image') {
