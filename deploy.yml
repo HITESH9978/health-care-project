@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: capstone-app-container
-          image: shivareddy24/healthcare:latest  # Add the image version here
+          image: shriteshb9978/healthcare:latest  # Add the image version here
           ports:
             - containerPort: 8082
 
